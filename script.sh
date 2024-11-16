@@ -14,7 +14,7 @@ python main.py --app wide_image --tag wide_image --save_dir_now --prompt "A lave
 python main.py --app ambiguous_image --tag ambiguous_image --save_dir_now --prompt "an oil painting of a snowy mountain village" "an oil painting of a horse"
 python main.py --app ambiguous_image --tag ambiguous_image --save_dir_now --prompt "a photo of a duck" "a photo of a rabbit"
 python main.py --app ambiguous_image --tag ambiguous_image --save_dir_now --prompt "an oil painting of a library" "an oil painting of a theater"
-python main.py --app ambiguous_image --tag ambiguous_image --save_dir_now --prompt "aan oil painting of a maine coon" "an oil painting of a canyon"
+python main.py --app ambiguous_image --tag ambiguous_image --save_dir_now --prompt "an oil painting of a maine coon" "an oil painting of a canyon"
 python main.py --app ambiguous_image --tag ambiguous_image --save_dir_now --prompt "a photo of a goldfish" "a photo of the queen of England"
 python main.py --app ambiguous_image --tag ambiguous_image --save_dir_now --prompt "a lithograph of a table" "a lithograph of a waterfall"
 python main.py --app ambiguous_image --tag ambiguous_image --save_dir_now --prompt "a pencil sketch of students in a classroom" "a pencil sketch of flower arrangements"
