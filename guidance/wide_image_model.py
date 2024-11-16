@@ -87,7 +87,9 @@ class WideImageModel(BaseModel):
         """
 
         # TODO: Implement forward_mapping
-        raise NotImplementedError("forward_mapping is not implemented yet.")
+        xts = torch.zeros((self.num_views, z_t.shape[1], self.latent_instance_size, self.latent_instance_size)).to(self.device)
+        for i, (h_start, h_end, w_start, w_end) in enumerate(self.mapper):
+            xts[i] = z_t[:, :, h_start:h_end, w_start:w_end]   
 
         return xts
         
@@ -102,7 +104,15 @@ class WideImageModel(BaseModel):
         """
 
         # TODO: Implement inverse_mapping
-        raise NotImplementedError("inverse_mapping is not implemented yet.")
+        self.count.zero_()
+        self.value.zero_()
+        for i, (h_start, h_end, w_start, w_end) in enumerate(self.mapper):
+            self.value[:, :, h_start:h_end, w_start:w_end] += x_ts[i:i+1, ...]
+            self.count[:, :, h_start:h_end, w_start:w_end] += 1
+
+        z_t = torch.where(self.count > 0, self.value / self.count, self.value)
+
+        return z_t
 
 
     def init_prompt_embeddings(

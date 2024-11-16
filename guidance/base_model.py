@@ -118,7 +118,15 @@ class BaseModel(metaclass=ABCMeta):
         """
         
         # TODO: Implement compute_tweedie
-        raise NotImplementedError("compute_tweedie is not implemented yet.")
+        alpha_t = alphas[timestep]
+        sigma_t = sigmas[timestep]
+
+        if self.config.model == "sd":
+            pred_x0s = (xts - sigma_t * eps) / alpha_t
+        else:
+            pred_x0s = (xts - sigma_t * eps[:, :3, :, :]) / alpha_t
+
+        return pred_x0s
 
         
     def compute_prev_state(
@@ -132,7 +140,19 @@ class BaseModel(metaclass=ABCMeta):
         """
         
         # TODO: Implement compute_prev_state
-        raise NotImplementedError("compute_prev_state is not implemented yet.")
+        scheduler = self.model.scheduler if self.config.model == "sd" else self.stage_1.scheduler
+        dT = scheduler.config.num_train_timesteps // self.config.num_inference_steps
+        prev_timestep = timestep - dT if timestep > dT else 0
+
+        a_t = scheduler.alphas_cumprod[timestep]
+        a_t_prev = scheduler.alphas_cumprod[prev_timestep]
+
+        sqrt_a_t = a_t ** (0.5)
+        sqrt_a_t_prev = a_t_prev ** (0.5)
+        sqrt_one_minus_a_t = (1 - a_t) ** (0.5)
+        sqrt_one_minus_a_t_prev = (1 - a_t_prev) ** (0.5)
+
+        return sqrt_a_t_prev * pred_x0s + (sqrt_one_minus_a_t_prev ) * (xts - sqrt_a_t * pred_x0s) / sqrt_one_minus_a_t
         
     def one_step_process(
         self, input_params, timestep, alphas, sigmas, **kwargs
